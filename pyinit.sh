@@ -1,11 +1,11 @@
-#! /bin/bash -x
+#! /bin/bash
 #
 # =============================================================== #
 #
 # Initiate a python project using git, pyenv and venv
 # By Morten Ginnerskov
 #
-# Last modified: 2021.05.10-15:31 +0200
+# Last modified: 2021.05.10-20:06 +0200
 #
 # =============================================================== #
 # TODO:
@@ -27,6 +27,25 @@ if [[ -n $DEV_PRJ_HOME ]]; then
 else
     dir=$( pwd )
 fi
+
+read -r -d '' helptext <<- 'EOH'
+Initiates a python project, creating a folder and initiates git, pyenv and a virtual environment.
+
+Usage: pyinit [OPTIONS] PROJECT-NAME
+
+Options:
+    -p, --private                   Create the GitHub project as a private project.
+    -u, --user <USER>               Use github user USER. Defaults to current username.
+    -d, --description <DESCRIPTION> Short description for the GitHub project.
+    -V, --version <X.Y.Z>           Set the python version to be used. Defaults to the newest available version.
+    -D, --directory <DIR>           Directory in which to create the project. Default will use environment variable
+                                    DEV_PRJ_HOME if available, if not it will use the current working directory.
+    -h, --help                      Print help and exit.
+
+Examples:
+    pyinit -p -u John test-project  Creates a project named 'test-project', using the GitHub user 'John'. The GitHub project will be private.
+    pyinit
+EOH
 
 positional=()
 while [[ $# -gt 0 ]]
@@ -57,6 +76,10 @@ case $key in
         dir="$2"
         shift
         shift
+        ;;
+    -h|--help)
+        echo "$helptext"
+        exit 0
         ;;
     *)
         positional+=("$1")
