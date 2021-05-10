@@ -5,15 +5,13 @@
 # Initiate a python project using git, pyenv and venv
 # By Morten Ginnerskov
 #
-# Last modified: 2021.05.10-15:16 +0200
+# Last modified: 2021.05.10-15:31 +0200
 #
 # =============================================================== #
 # TODO:
-#   - Optional python version
-#   - Github user?
-#   - Project description
-#   - Private or not
 #   - Dry run mode (-n)
+#   - Help text
+#   - Supress output
 
 private="false"
 user=$( whoami )
@@ -79,6 +77,8 @@ elif [[ ! -d "$dir" ]]; then
     echo "Your project directory is not valid. You might have an empty DEV_PRJ_HOME variable or supplied an empty string to the 'directory option.'" >&2
     exit 1
 fi
+
+# Initiate git version control
 /usr/bin/git init "$prj_dir"
 cd "$prj_dir" || { echo "Failed to change into project directory." >&2; exit 1; }
 
@@ -90,16 +90,22 @@ else
     "$HOME"/.pyenv/bin/pyenv install "$python_version" && "$HOME"/.pyenv/bin/pyenv local "$python_version"
 fi
 
+# Create initial README file
 echo "# $prj_name" >> "$prj_dir"/README.git
 
+# Create project on Github
 /usr/bin/curl -X POST -H "Authorization: token $(pass personal/github-create-repo-token)" -u "$user" https://api.github.com/user/repos -d "{\"name\":\"$prj_name\",\"description\":\"$description\",\"private\":\"$private\"}"
 
+# Add the github remote
 /usr/bin/git remote add origin git@"$user"-github:"$user"/"$prj_name".git
 
+# Make sure the pyenv is up to date
 "$HOME"/.pyenv/bin/pyenv rehash
 
+# Initiate python virtual environment
 python -m venv .venv
 
+# Inform the user
 if [[ -e "$prj_dir/.python-version" ]]; then
     echo "pyenv environment initiated with python version $( cat "$prj_dir"/.python-version )"
 else
