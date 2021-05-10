@@ -5,7 +5,7 @@
 # Initiate a python project using git, pyenv and venv
 # By Morten Ginnerskov
 #
-# Last modified: 2021.05.10-20:27 +0200
+# Last modified: 2021.05.10-20:48 +0200
 #
 # =============================================================== #
 # TODO:
@@ -39,9 +39,6 @@ Options:
     -V, --version <X.Y.Z>           Set the python version to be used. Defaults to the newest available version.
     -D, --directory <DIR>           Directory in which to create the project. Default will use environment variable
                                     DEV_PRJ_HOME if available, if not it will use the current working directory.
-    -v, --verbose                   Verbose output.
-    -n, --dry-run                   Print what will happen, but do nothing.
-    -q, --quiet                     Only print error and warning messages, suppress other output.
     -h, --help                      Print help and exit.
 
 Examples:
@@ -83,16 +80,8 @@ case $key in
         echo "$helptext"
         exit 0
         ;;
-    -v|--verbose )
-        output="verbose"
-        shift
-        ;;
     -n|--dry-run )
-        output="dry-run"
-        shift
-        ;;
-    -q|--quiet )
-        output="quiet"
+        dry="1"
         shift
         ;;
     *)
@@ -106,6 +95,23 @@ set -- "${positional[@]}"
 prj_name=$1
 
 prj_dir="$dir$prj_name"
+
+# Dry run
+if [[ "$dry" -eq 1 ]]; then
+    echo "The command will create a project directory named '$prj_name' in '$dir'."
+    echo "The project will be using python version $python_version."
+    echo -n "It will attempt to create a GitHub repo named '$prj_name' under user '$user', the repo will be"
+    if [[ "$private" == "true" ]]; then
+        echo " private."
+    else
+        echo " public."
+    fi
+    if [[ -n "$description" ]]; then
+        printf "The GitHub repo will be given the following description:\n"
+        echo "$description"
+    fi
+    exit 0
+fi
 
 # Check directories
 if [[ -d "$prj_dir" ]]; then
@@ -165,10 +171,3 @@ else
     exit 1
 fi
 
-case $output in
-    verbose )
-        ;;
-    dry-run )
-        ;;
-    quiet )
-esac
