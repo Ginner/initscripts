@@ -5,13 +5,12 @@
 # Initiate a python project using git, pyenv and venv
 # By Morten Ginnerskov
 #
-# Last modified: 2021.05.10-20:06 +0200
+# Last modified: 2021.05.10-20:27 +0200
 #
 # =============================================================== #
 # TODO:
 #   - Dry run mode (-n)
-#   - Help text
-#   - Supress output
+#   - Suppress output
 
 private="false"
 user=$( whoami )
@@ -40,6 +39,9 @@ Options:
     -V, --version <X.Y.Z>           Set the python version to be used. Defaults to the newest available version.
     -D, --directory <DIR>           Directory in which to create the project. Default will use environment variable
                                     DEV_PRJ_HOME if available, if not it will use the current working directory.
+    -v, --verbose                   Verbose output.
+    -n, --dry-run                   Print what will happen, but do nothing.
+    -q, --quiet                     Only print error and warning messages, suppress other output.
     -h, --help                      Print help and exit.
 
 Examples:
@@ -67,7 +69,7 @@ case $key in
         shift
         shift
         ;;
-    -v|--version)
+    -V|--version)
         python_version="$2"
         shift
         shift
@@ -81,6 +83,18 @@ case $key in
         echo "$helptext"
         exit 0
         ;;
+    -v|--verbose )
+        output="verbose"
+        shift
+        ;;
+    -n|--dry-run )
+        output="dry-run"
+        shift
+        ;;
+    -q|--quiet )
+        output="quiet"
+        shift
+        ;;
     *)
         positional+=("$1")
         shift
@@ -93,6 +107,7 @@ prj_name=$1
 
 prj_dir="$dir$prj_name"
 
+# Check directories
 if [[ -d "$prj_dir" ]]; then
     echo "A directory named $prj_name already exists" >&2
     exit 1
@@ -149,3 +164,11 @@ else
     echo "Something went wrong... Version control has not been initiated." >&2
     exit 1
 fi
+
+case $output in
+    verbose )
+        ;;
+    dry-run )
+        ;;
+    quiet )
+esac
