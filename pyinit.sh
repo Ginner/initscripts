@@ -5,15 +5,13 @@
 # Initiate a python project using git, pyenv and venv
 # By Morten Ginnerskov
 #
-# Last modified: 2021.05.10-21:28 +0200
+# Last modified: 2021.05.11-08:07 +0200
 #
 # =============================================================== #
-# TODO:
-#   - Dry run mode (-n)
-#   - Suppress output
 
+# Initiate variables
 private="false"
-user=$( whoami )
+user=$( git config --list | awk -F '=' '/user.name { print $2 }' )
 description=""
 python_versions=$( pyenv versions \
     | awk '{ if( $1 ~ /^[23]\.[[:digit:]]+\.[[:digit:]]+/) print $1 ; else if ( $2 ~ /^[23]\.[[:digit:]]+\.[[:digit:]]+/) print $2 }'
@@ -34,7 +32,7 @@ Usage: pyinit [OPTIONS] PROJECT-NAME
 
 Options:
     -p, --private                   Create the GitHub project as a private project.
-    -u, --user <USER>               Use github user USER. Defaults to current username.
+    -u, --user <USER>               Use github user USER. Defaults to git user.name.
     -d, --description <DESCRIPTION> Short description for the GitHub project.
     -V, --version <X.Y.Z>           Set the python version to be used. Defaults to the newest
                                     available version.
