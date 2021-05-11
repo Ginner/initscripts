@@ -5,7 +5,7 @@
 # Initiate a python project using git, pyenv and venv
 # By Morten Ginnerskov
 #
-# Last modified: 2021.05.11-08:09 +0200
+# Last modified: 2021.05.11-09:12 +0200
 #
 # =============================================================== #
 
@@ -124,17 +124,49 @@ elif [[ ! -d "$dir" ]]; then
     exit 1
 fi
 
-# Initiate git version control
-/usr/bin/git init "$prj_dir"
+mkdir --verbose "$prj_dir"
 cd "$prj_dir" || { echo "Failed to change into project directory." >&2; exit 1; }
 
 # If no python version specified, use the newest standard python version available
 # Otherwise, check if available, if not install it
-if [[ "$python_versions" == *"$python_version"* ]]; then
-    "$HOME"/.pyenv/bin/pyenv local "$python_version"
-else
-    "$HOME"/.pyenv/bin/pyenv install "$python_version" && "$HOME"/.pyenv/bin/pyenv local "$python_version"
-fi
+while true; do
+    if [[ "$python_versions" == *"$python_version"* ]]; then
+        "$HOME"/.pyenv/bin/pyenv local "$python_version"
+        break
+    else
+        cat <<-END
+        Python version $python_version is not installed.
+
+            Attempt to [i]nstall the version and proceed
+            [s]how installed versions
+            [e]xit
+
+        What do you wish to do? [i/s/e]:
+        END
+        read ans
+        case "$ans" in
+            i )
+                "$HOME"/.pyenv/bin/pyenv install "$python_version" && "$HOME"/.pyenv/bin/pyenv local "$python_version"
+                break
+                ;;
+            s)
+                echo "$python_versions"
+                echo " "
+                echo -n "Which version do you want? (it doesn't have to be in the list): "
+                read python_version
+                continue
+                ;;
+            e )
+                cd "$dir"
+                rmdir --verbose "$prj_dir"
+                exit 0
+                ;;
+        esac
+    fi
+done
+
+# Initiate git version control
+/usr/bin/git init "$prj_dir"
 
 # Create initial README file
 echo "# $prj_name" >> "$prj_dir"/README.git
