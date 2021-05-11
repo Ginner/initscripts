@@ -5,13 +5,13 @@
 # Initiate a python project using git, pyenv and venv
 # By Morten Ginnerskov
 #
-# Last modified: 2021.05.11-08:07 +0200
+# Last modified: 2021.05.11-08:09 +0200
 #
 # =============================================================== #
 
 # Initiate variables
 private="false"
-user=$( git config --list | awk -F '=' '/user.name { print $2 }' )
+user=$( git config --get user.name )
 description=""
 python_versions=$( pyenv versions \
     | awk '{ if( $1 ~ /^[23]\.[[:digit:]]+\.[[:digit:]]+/) print $1 ; else if ( $2 ~ /^[23]\.[[:digit:]]+\.[[:digit:]]+/) print $2 }'
