@@ -5,7 +5,7 @@
 # Initiate a python project using git, pyenv and venv
 # By Morten Ginnerskov
 #
-# Last modified: 2021.05.11-09:12 +0200
+# Last modified: 2021.05.11-09:30 +0200
 #
 # =============================================================== #
 
@@ -135,31 +135,36 @@ while true; do
         break
     else
         cat <<-END
-        Python version $python_version is not installed.
+Python version $python_version is not installed.
 
-            Attempt to [i]nstall the version and proceed
-            [s]how installed versions
-            [e]xit
+    [1] Attempt to install the version and proceed
+    [2] Show installed versions
+    [3] Exit
 
-        What do you wish to do? [i/s/e]:
-        END
-        read ans
+END
+        echo -n "What do you wish to do? [1/2/3]: "
+        read -r ans
         case "$ans" in
-            i )
+            1 )
                 "$HOME"/.pyenv/bin/pyenv install "$python_version" && "$HOME"/.pyenv/bin/pyenv local "$python_version"
                 break
                 ;;
-            s)
+            2 )
+                echo "Installed python versions:"
                 echo "$python_versions"
                 echo " "
                 echo -n "Which version do you want? (it doesn't have to be in the list): "
-                read python_version
+                read -r python_version
                 continue
                 ;;
-            e )
-                cd "$dir"
+            3 )
+                cd "$dir" || exit 0
                 rmdir --verbose "$prj_dir"
                 exit 0
+                ;;
+            * )
+                echo "$ans is not an option, choose 1, 2 or 3."
+                continue
                 ;;
         esac
     fi
