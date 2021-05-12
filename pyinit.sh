@@ -5,7 +5,7 @@
 # Initiate a python project using git, pyenv and venv
 # By Morten Ginnerskov
 #
-# Last modified: 2021.05.12-13:31 +0200
+# Last modified: 2021.05.12-13:35 +0200
 #
 # =============================================================== #
 
@@ -213,3 +213,9 @@ else
     exit 1
 fi
 
+if [[ -e "$prj_dir/.gitignore" ]]; then
+    echo "A .gitignore file has been downloaded. You should go through it to make sure the files you intend to version control are not ignored. "
+else
+    echo "No .gitignore file has been downloaded." >&2
+    exit 1
+fi
