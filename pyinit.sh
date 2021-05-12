@@ -5,7 +5,7 @@
 # Initiate a python project using git, pyenv and venv
 # By Morten Ginnerskov
 #
-# Last modified: 2021.05.11-09:30 +0200
+# Last modified: 2021.05.12-13:31 +0200
 #
 # =============================================================== #
 
@@ -187,6 +187,9 @@ echo "# $prj_name" >> "$prj_dir"/README.git
 
 # Initiate python virtual environment
 python -m venv .venv
+
+# Download a .gitignore file
+/usr/bin/curl -O https://raw.githubusercontent.com/Ginner/gitignore/master/python/.gitignore
 
 # Inform the user
 if [[ -e "$prj_dir/.python-version" ]]; then
