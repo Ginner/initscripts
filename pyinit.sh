@@ -5,7 +5,7 @@
 # Initiate a python project using git, pyenv and venv
 # By Morten Ginnerskov
 #
-# Last modified: 2021.05.12-13:35 +0200
+# Last modified: 2021.05.18-15:34 +0200
 #
 # =============================================================== #
 
@@ -174,7 +174,7 @@ done
 /usr/bin/git init "$prj_dir"
 
 # Create initial README file
-echo "# $prj_name" >> "$prj_dir"/README.git
+echo "# $prj_name" >> "$prj_dir"/README.md
 
 # Create project on Github
 /usr/bin/curl -X POST -H "Authorization: token $(pass personal/github-create-repo-token)" -u "$user" https://api.github.com/user/repos -d "{\"name\":\"$prj_name\",\"description\":\"$description\",\"private\":\"$private\"}"
