@@ -5,7 +5,7 @@
 # Initiate a python project using git, pyenv and venv
 # By Morten Ginnerskov
 #
-# Last modified: 2021.05.19-15:05 +0200
+# Last modified: 2021.05.19-15:30 +0200
 #
 # =============================================================== #
 
@@ -17,6 +17,8 @@ python_versions=$( pyenv versions \
     | awk '{ if( $1 ~ /^[23]\.[[:digit:]]+\.[[:digit:]]+/) print $1 ; else if ( $2 ~ /^[23]\.[[:digit:]]+\.[[:digit:]]+/) print $2 }'
 )
 python_version=$( echo "$python_versions" | tail --lines=1 )
+git="1"
+dry="0"
 
 # Use environment variable if it is there, otherwise use current directory
 if [[ -n $DEV_PRJ_HOME ]]; then
@@ -38,6 +40,8 @@ Options:
                                     available version.
     -D, --directory <DIR>           Directory in which to create the project. Default will use
                                     environment variable DEV_PRJ_HOME if available, if not it will use the current working directory.
+    -n, --dry-run                   Show what happens without actually doing anything.
+    -l, --local                     Initiate the project without git (e.g. you're going to clone a repo).
     -h, --help                      Print help and exit.
 
 Virtual Environment:
@@ -86,6 +90,10 @@ case $key in
         dry="1"
         shift
         ;;
+    -l|--local )
+        git="0"
+        shift
+        ;;
     *)
         positional+=("$1")
         shift
@@ -102,15 +110,17 @@ prj_dir="$dir$prj_name"
 if [[ "$dry" -eq 1 ]]; then
     echo "The command will create a project directory named '$prj_name' in '$dir'."
     echo "The project will be using python version $python_version."
-    echo -n "It will attempt to create a GitHub repo named '$prj_name' under user '$user', the repo will be"
-    if [[ "$private" == "true" ]]; then
-        echo " private."
-    else
-        echo " public."
-    fi
-    if [[ -n "$description" ]]; then
-        printf "The GitHub repo will be given the following description:\n"
-        echo "$description"
+    if [[ "$git" -eq 1 ]]; then
+        echo -n "It will attempt to create a GitHub repo named '$prj_name' under user '$user', the repo will be"
+        if [[ "$private" == "true" ]]; then
+            echo " private."
+        else
+            echo " public."
+        fi
+        if [[ -n "$description" ]]; then
+            printf "The GitHub repo will be given the following description:\n"
+            echo "$description"
+        fi
     fi
     exit 0
 fi
@@ -170,17 +180,17 @@ END
     fi
 done
 
-# Initiate git version control
-/usr/bin/git init "$prj_dir"
-
 # Create initial README file
 echo "# $prj_name" >> "$prj_dir"/README.md
 
-# Create project on Github
-/usr/bin/curl -X POST -H "Authorization: token $(pass personal/github-create-repo-token)" -u "$user" https://api.github.com/user/repos -d "{\"name\":\"$prj_name\",\"description\":\"$description\",\"private\":\"$private\"}"
-
-# Add the github remote
-/usr/bin/git remote add origin git@"$user"-github:"$user"/"$prj_name".git
+# Initiate git version control
+if [[ "$git" -eq 1 ]]; then
+    /usr/bin/git init "$prj_dir"
+    # Create project on Github
+    /usr/bin/curl -X POST -H "Authorization: token $(pass personal/github-create-repo-token)" -u "$user" https://api.github.com/user/repos -d "{\"name\":\"$prj_name\",\"description\":\"$description\",\"private\":\"$private\"}"
+    # Add the github remote
+    /usr/bin/git remote add origin git@"$user"-github:"$user"/"$prj_name".git
+fi
 
 # Make sure the pyenv is up to date
 "$HOME"/.pyenv/bin/pyenv rehash
@@ -208,6 +218,8 @@ fi
 
 if [[ -d "$prj_dir/.git" ]]; then
     echo "A git repository has been initiated for the project."
+elif [[ "$git" -eq 0 ]]; then
+    echo "No git repository initiated."
 else
     echo "Something went wrong... Version control has not been initiated." >&2
     exit 1
