@@ -5,7 +5,7 @@
 # Initiate a python project using git, pyenv and venv
 # By Morten Ginnerskov
 #
-# Last modified: 2021.05.19-15:30 +0200
+# Last modified: 2021.05.24-22:19 +0200
 #
 # =============================================================== #
 
@@ -104,7 +104,7 @@ set -- "${positional[@]}"
 
 prj_name=$1
 
-prj_dir="$dir$prj_name"
+prj_dir="$dir/$prj_name"
 
 # Dry run
 if [[ "$dry" -eq 1 ]]; then

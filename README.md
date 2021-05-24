@@ -10,7 +10,7 @@ It will attempt to use the environment variable `DEV_PRJ_HOME` as the project ho
 
 ```
 # Setup for the init-scripts, put it in your .bashrc, .zshrc or whichever
-export DEV_PRJ_HOME="$HOME/Development/"
+export DEV_PRJ_HOME="$HOME/Development"
 export PATH="$PATH:$HOME/bin"
 ```
 
