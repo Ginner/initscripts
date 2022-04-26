@@ -3,9 +3,9 @@
 # =============================================================== #
 #
 # Initiate a python project using git, pyenv and venv
-# By Morten Ginnerskov
+# By Ginner
 #
-# Last modified: 2021.05.24-22:19 +0200
+# Last modified: 2022.04.26-22:50 +0200
 #
 # =============================================================== #
 
@@ -187,7 +187,7 @@ echo "# $prj_name" >> "$prj_dir"/README.md
 if [[ "$git" -eq 1 ]]; then
     /usr/bin/git init "$prj_dir"
     # Create project on Github
-    /usr/bin/curl -X POST -H "Authorization: token $(pass personal/github-create-repo-token)" -u "$user" https://api.github.com/user/repos -d "{\"name\":\"$prj_name\",\"description\":\"$description\",\"private\":\"$private\"}"
+    /usr/bin/curl -X POST -H "Authorization: token $(pass personal/github-create-repo-token | /usr/bin/head -1)" -u "$user" https://api.github.com/user/repos -d "{\"name\":\"$prj_name\",\"description\":\"$description\",\"private\":\"$private\"}"
     # Add the github remote
     /usr/bin/git remote add origin git@"$user"-github:"$user"/"$prj_name".git
 fi
