@@ -5,7 +5,7 @@
 # Initiate a python project using git, pyenv and venv
 # By Ginner
 #
-# Last modified: 2022.04.26-22:50 +0200
+# Last modified: 2022.04.29-23:02 +0200
 #
 # =============================================================== #
 
@@ -49,7 +49,7 @@ Virtual Environment:
 
 Examples:
     pyinit -p -u John test-project  Creates a project named 'test-project', using the GitHub
-                                    user 'John'. The GitHub project will be private.
+                                    user 'john'. The GitHub project will be private.
 EOH
 
 positional=()
@@ -63,7 +63,7 @@ case $key in
         shift
         ;;
     -u|--user)
-        user="$2"
+        user="${2,,}"
         shift
         shift
         ;;
