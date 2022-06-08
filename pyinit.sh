@@ -5,7 +5,7 @@
 # Initiate a python project using git, pyenv and venv
 # By Ginner
 #
-# Last modified: 2022.04.29-23:02 +0200
+# Last modified: 2022.06.08-06:42 +0200
 #
 # =============================================================== #
 
@@ -210,7 +210,7 @@ else
 fi
 
 if [[ -d "$prj_dir/.venv" ]]; then
-    echo "A virtual environment has been initiated. Activate it from within the project folder with 'source ./venv/bin/activate'. Your prompt should then reflect the change. Deactivate the virtual environment with 'deactivate'."
+    echo "A virtual environment has been initiated. Activate it from within the project folder with 'source .venv/bin/activate'. Your prompt should then reflect the change. Deactivate the virtual environment with 'deactivate'."
 else
     echo "Something went wrong... A virtual environment has not been initiated." >&2
     exit 1
